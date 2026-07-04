@@ -1,66 +1,78 @@
-Intuition of how the algorithm works:
+# 🐜 Ant Colony Optimization (ACO)
 
-Ants are traveling from a starting location to the final, visiting all cities. We can imagine they return using the same paths, and deposit pheromone on the way back. They deposit more pheromone on shorter distances, then long ones, and only on the path they traveled. An individual ant makes decisions on what city to go to based on level of pheromone on the path and the distance to the nearest city.
+A Python implementation of the **Ant Colony Optimization (ACO)** algorithm for solving the **Traveling Salesman Problem (TSP)** using swarm intelligence. The project demonstrates how artificial ants collaboratively discover near-optimal routes by depositing and following pheromone trails while balancing exploration and exploitation.
 
-In more detail:
+## Features
 
-1) We select N number of ants.
-2) We initialize matrix of pheromone deposits, it is the same shape as the distance matrix. And coordinates respond to the same cities. If `distances[2,5] = 35` the distance from 2 to 5 is 35, and if `pheromone[2,5] = 0.8` the level of pheromone deposited on path between 2 and 5 is 0.8. The pheromone matrix is initialize with small variables all of the same value.
-3) Explore some paths:
+* Ant Colony Optimization algorithm from scratch
+* Traveling Salesman Problem (TSP) solver
+* Probabilistic path selection using pheromone intensity and distance heuristic
+* Configurable parameters (`alpha`, `beta`, evaporation rate, number of ants, iterations)
+* Pheromone evaporation and reinforcement mechanism
+* Easy-to-understand and modular implementation
+* Suitable for learning bio-inspired optimization algorithms
 
-Ant makes a decision on what city to go to using this:
+## How It Works
 
-```
-city_to_city_score = pheromone ** alpha * (1.0 / distance) ** beta
-```
+The algorithm simulates the foraging behavior of ants:
 
-alpha and beta act as weight on pheromone and distance respectively. 
+1. Initialize pheromone levels uniformly across all paths.
+2. Place multiple ants at random starting cities.
+3. Each ant constructs a complete tour by selecting the next city based on:
 
-We calculate ```city_to_city_score``` for all the available cities (we are ignoring cities we already visited, because we can't go back to them).
+   * Current pheromone concentration
+   * Distance to neighboring cities
+4. After completing a tour, ants deposit pheromones proportional to the quality of their solution (shorter routes receive more pheromone).
+5. Existing pheromones gradually evaporate to prevent premature convergence.
+6. Repeat the process for several iterations until the best route is found.
 
-The probability of going to the next city is:
+## Formula
 
-```
-prob_of_going_to_city(i) = city_to_city_score(i) / sum_of_all_available_city_to_city_scores
-```
+The probability of selecting the next city is determined by:
 
-For example, if an ant is at city 2, and available cities are 4,7,8. We computed the scores for those cities as:
-
-```
-{4: 0.2, 7: 0.4, 8: 0.8}
-```
-
-The probability of going to 4 is ```0.2 / (0.2 + 0.4 + 0.8) = 0.142857``` and so on.
-
-An ant keeps going from city to city according to the above choosing rule until he visits all cities.
-
-If we chose 20 ants to start with, we will have 20 paths at the end of this group of ants traveling generation.
-
-Since in the initial step the pheromone levels are the same, the choices are made on distances + some noise. Randomized Greedy if you like. But we want to keep track of the successful routes, so ants deposit pheromone.
-
-4) On the way back all ants or selected number of best ants deposit pheromone on the paths they traveled.
-
-They deposit:
-
-```
- 1 / (distance between two cities)
+```text
+Score = (Pheromone)^α × (1 / Distance)^β
 ```
 
-For example:
-an ant traveled a path: [ (0 -> 3) (distance: 8), (3 -> 5) (distance: 2)]
+where:
 
-0.125 units of pheromone would be deposited on ```pheromone[0,3] += 0.125``` and ```pheromone[3,5] += 0.5```
+* **α (alpha)** controls the influence of pheromone trails.
+* **β (beta)** controls the influence of the distance heuristic.
 
-This is done to encourage ants to give more priority to shorter routes between cities.
+## Applications
 
-5) The final piece, is that we have to let pheromone decay, so old pheromone does not confuse next generations of ants.
-We just multiply the pheromone matrix by decay rate. Right after we deposit. Therefore pheromone that has been sitting for a while has been subject to many many decays and should be small.
+* Traveling Salesman Problem (TSP)
+* Vehicle Routing Problems (VRP)
+* Logistics and Supply Chain Optimization
+* Network Routing
+* Scheduling and Resource Allocation
+* Robotics Path Planning
 
-6) Keep doing steps 3) 4) and 5) for n iterations. 
+## Technologies
 
+* Python
+* NumPy
+* Matplotlib (optional for visualization)
 
+## Repository Structure
 
+```text
+├── aco.py               # Ant Colony Optimization implementation
+├── tsp.py               # Traveling Salesman Problem utilities
+├── utils.py             # Helper functions
+├── datasets/            # Sample distance matrices
+├── results/             # Output routes and visualizations
+└── README.md
+```
 
+## Future Improvements
 
+* Dynamic parameter tuning
+* Parallel ant simulation
+* Visualization of pheromone evolution
+* Support for asymmetric TSP
+* Benchmarking against Genetic Algorithms and Simulated Annealing
 
+## License
 
+This project is intended for educational purposes and research in swarm intelligence and optimization algorithms.
