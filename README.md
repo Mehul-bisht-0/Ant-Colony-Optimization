@@ -1,4 +1,4 @@
-# 🐜 Ant Colony Optimization (ACO)
+# Ant Colony Optimization (ACO)
 
 A Python implementation of the **Ant Colony Optimization (ACO)** algorithm for solving the **Traveling Salesman Problem (TSP)** using swarm intelligence. The project demonstrates how artificial ants collaboratively discover near-optimal routes by depositing and following pheromone trails while balancing exploration and exploitation.
 
